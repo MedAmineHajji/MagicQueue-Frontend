@@ -48,7 +48,13 @@ function DraggableElement(elementObject){
             defaultPosition={{x: leftValue, y: topValue}}
             bounds="parent"
         >
-            <div id={element_id} className={element_class} style={{display: "inline-block"}}>
+            <div id={element_id}
+                className={element_class}
+                style={{
+                    display: "inline-block",
+                    cursor: 'grab'
+                }}
+            >
                 <div  dangerouslySetInnerHTML={{ __html: elementObject.elementObject.element_content }} />
             </div>
         </Draggable>

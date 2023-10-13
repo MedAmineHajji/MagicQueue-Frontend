@@ -88,8 +88,10 @@ function EditComponent(){
     const [logoName, setLogoName] = useState('');
     const [logoFile, setLogoFile] = useState(null);
 
+    // If a template has already a logo, this is where The Id is stored
     const [oldIdLogo, setOldIdLogo] = useState(null);
-    const [oldLogoFile, setOldLogoFile] = useState(null);
+    // If a template has already a logo, this is its data where stored
+    const [oldLogoData, setOldLogoData] = useState(null);
 
 
     const handleFileChange = (event) => {
@@ -296,6 +298,9 @@ function EditComponent(){
                 });
                 setIdLogo(result.data.logo_id);
                 setOldIdLogo(result.data.logo_id);
+                if(idLogo){
+                    fetchLogoDataById(idLogo);
+                }
             }
         ).catch(
             (error) => {
@@ -324,8 +329,13 @@ function EditComponent(){
         )
     };
 
-    
-
+    const fetchLogoDataById = async (id) => {
+        await axios.get(API_url + `logo/getData/${id}`).then(
+            (res) => setOldLogoData(res.data)
+        ).catch(
+            (error) => console.log(error)
+        );
+    }
 
 //fetching data from API using the id variable
     useEffect(() => {
@@ -456,6 +466,32 @@ function EditComponent(){
                 height: dimensionOfTemplate.dimension_height
             }}
         >
+            <Draggable
+                bounds="parent"
+            >
+                <div style={{
+                    position: 'relative',
+                    cursor: 'grab',
+                    width: '50px',
+                    height: '50px'
+                }}>
+                    {/* {idLogo ? (
+                    <img src={`http://localhost:8000/api/logo/getFile/${idLogo}`} style={{ maxWidth: '30%', height: 'auto' }} />
+                ): (
+                    <>
+                    No current logo, upload a file.
+                    </>
+                )} */}
+                <img src={`http://localhost:8000/api/logo/getFile/${idLogo}`} 
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                    }} 
+                />
+                
+                </div>
+                
+            </Draggable>
             {arrayOfElementsData.map((elementObjectData) => (
 
                 !elementObjectData.element_is_hidden ? (
@@ -468,26 +504,12 @@ function EditComponent(){
                         />
                     </>
                 ): (
-                    
                     <>
                     </>
                 )
                         
             ))}
-            <Draggable
-                axis="both"
-                defaultPosition={{x: "50px", y: "50px"}}
-            >
-                {/* {idLogo ? (
-                    <img src={`http://localhost:8000/api/logo/getFile/${idLogo}`} style={{ maxWidth: '30%', height: 'auto' }} />
-                ): (
-                    <>
-                    No current logo, upload a file.
-                    </>
-                )} */}
-                <img src={`http://localhost:8000/api/logo/getFile/${idLogo}`} style={{ maxWidth: '30%', height: 'auto' }} />
-                
-            </Draggable>
+            
         </div>
                 
         <Button
